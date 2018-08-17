@@ -111,7 +111,7 @@ typedef struct _HookStruct {
 	void *occPlace;
 } HookStruct;
 
-int (*TK_HookImportFunction)(HookStruct *pHookStruct);
+void (*TK_HookImportFunction)(HookStruct *pHookStruct);
 int (*TK_HookExportFunction)(HookStruct *pHookStruct);
 int (*TK_InlineHookFunction)(void *TargetFunc, void *NewFunc, void** OldFunc);
 

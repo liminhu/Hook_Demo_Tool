@@ -30,8 +30,8 @@
 #ifndef __ASM_SH_LOCAL_H
 #define __ASM_SH_LOCAL_H
 #endif
-#define LOG_TAG "hook_mg_anti"
-#define LOG_TAG_SUB "hook_sub_mg_anti"
+#define LOG_TAG "mg_hook_"
+#define LOG_TAG_SUB "my_sub_"
 #define LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define LOGD(fmt, args...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, fmt, ##args)
 
@@ -59,24 +59,13 @@ typedef struct {
 	int mode;
 }myHookStruct;
 
-static void* baseAdd = 0;
+static int* baseAdd = 0;
 static int isSoLoaded = 0;
 static int OnloadAddr = 0x21A0C; //0x21FF0; //JNI_OnLoad
-static int MemCheckAddr = 0x7E40C; //0x906F0;//0x5B590;
-static int ReadLR = 0x410 + 1; //where to hook read function
 
-//cn.qtt.caimanapp.duowanmotu - 5708
-static char
-		* AppStat =
-		"5130 (.cnlive.intertv) S 167 167 0 0 -1 4194624 26066 2878 0 0 304 79 0 4 5 -15 33 0 20004 749473792 23836 4294967295 1073934336 1073938591 3200838448 3200836768 1074772956 0 4612 0 38120 4294967295 0 0 17 0 0 0 0 0 0 1073946128 1073946624 1088978944";
 
 static char* SoPath =
         "/data/data/com.cnlive.intertv/files/libmgp_03.00.00_01.so";
-
-int antiMemCheck = 1;
-const int copyLen = 0xB3EB0;//0xFE1FB;	//soFile's length
-static char soCopy[copyLen + 1];
-char* soPath = "/sdcard/tmp/libmgp_03.00.00_01.so";
 
 typedef struct _HookStruct {
 	char SOName[SOINFO_NAME_LEN];
@@ -87,21 +76,21 @@ typedef struct _HookStruct {
 } HookStruct;
 
 void (*TK_HookImportFunction)(HookStruct *pHookStruct);
-int (*TK_HookExportFunction)(HookStruct *pHookStruct);
-int (*TK_InlineHookFunction)(void *TargetFunc, void *NewFunc, void** OldFunc);
-
+void (*TK_HookExportFunction)(HookStruct *pHookStruct);
+void (*TK_InlineHookFunction)(void *TargetFunc, void *NewFunc, void** OldFunc);
+/*
 int init_TKHookFunc() {
 	void * handle = dlopen(
 			"/data/data/com.hu.anti.dmxw.data/lib/libTKHooklib.so", RTLD_NOW);
 	if (handle != NULL) {
-		TK_HookExportFunction = dlsym(handle, "TK_HookExportFunction");
-		TK_InlineHookFunction = dlsym(handle, "TK_InlineHookFunction");
-		TK_HookImportFunction = dlsym(handle, "TK_HookImportFunction");
+		TK_HookExportFunction = static_cast<void (*)(HookStruct *)>(dlsym(handle, "TK_HookExportFunction"));
+		TK_InlineHookFunction = static_cast<void (*)(HookStruct *)>(dlsym(handle, "TK_InlineHookFunction");
+		TK_HookImportFunction = static_cast<void (*)(HookStruct *)>(dlsym(handle, "TK_HookImportFunction"));
 		if (TK_HookImportFunction != NULL)
 			return 1;
 	}
 	return 0;
-}
+}*/
 
 int str2hex(char *str, int j, char * parameter) {
 	int i;
@@ -143,39 +132,19 @@ int str2hex(char *str, int j, char * parameter) {
 					parameter, str);
 	}
 }
-
-void* (*oldmemCheck)(void * a1, void* a2, void* a3);
-void* mymemCheck(void * a1, void* a2, void* a3) {
-	int add = a1;
-	if (a1 >= baseAdd - 1 && a1 <= (baseAdd - 1 + copyLen))
-		add = a1 - ((int) baseAdd - 1) + (int) soCopy;
-	return oldmemCheck(add, a2, a3);
-}
-
-
 void baseAddressFunc() {
 	if (isSoLoaded)
 		return;
 	void * handle = dlopen(SoPath, RTLD_NOW); //com.joemusic JOEmusic
 	if (handle != NULL) {
 		void* Function = dlsym(handle, "JNI_OnLoad");
-		baseAdd = Function - OnloadAddr; // 对应版本so的jni_onload函数的地址
+        int tmp=(int)Function;
+		baseAdd = reinterpret_cast<int *>(tmp - OnloadAddr); // 对应版本so的jni_onload函数的地址
 		__android_log_print(ANDROID_LOG_INFO, LOG_TAG, "baseAdd:0x%X", baseAdd);
-		if (antiMemCheck) {
-			__android_log_print(ANDROID_LOG_INFO, LOG_TAG, "antidebug in");
-			memset(soCopy, 0, copyLen + 1);
-			int fd = open(soPath, O_RDONLY, 0666);
-			int len = read(fd, soCopy, copyLen);//0xCCB28	//0xCCB28 equals to copyLen's value
-			LOGI("read so file len:0x%x", len);
-			TK_InlineHookFunction((void*) (baseAdd + MemCheckAddr - 1),
-					&mymemCheck, &oldmemCheck); //how to find 0x906F0:please read readme.doc
-			antiMemCheck = 0;
-			__android_log_print(ANDROID_LOG_INFO, LOG_TAG, "antidebug out");
-			isSoLoaded = 1;
-		}
+
 	} else
 		__android_log_print(ANDROID_LOG_INFO, LOG_TAG,
-				"libmgp_03.00.00_01.so not found");
+				"so not found");
 
 	return;
 }
@@ -208,19 +177,12 @@ int myread(int handle, void *buf, int nbyte) {
 	GETLR(lr);
 	static char statBuf[256] = { 0 };
 	static int ret = 0;
-	if ((lr & 0xFFF) != ReadLR) { ////how to find 0x9ED:please read readme.doc
-		int read = oldread(handle, buf, nbyte);
-		__android_log_print(ANDROID_LOG_INFO, "native_mg_read",
-				"handle:%d buf[0x%x]:%.*s nbyte:%u dress[0x%x]", handle, buf,
-				read, buf, nbyte, lr);
-		return read;
-	} else {
-		static char* tmp = AppStat;
-		//how to find tmp:please read readme.doc
-		ret = 197;
-		memcpy(buf, tmp, ret);
-		return ret;
-	}
+
+	int read = oldread(handle, buf, nbyte);
+	__android_log_print(ANDROID_LOG_INFO, "native_mg_read",
+						"handle:%d buf[0x%x]:%.*s nbyte:%u dress[0x%x]", handle, buf,
+						read, buf, nbyte, lr);
+	return read;
 }
 
 int (* oldgettimeofday)(struct timeval*tv, struct timezone *tz);
@@ -321,7 +283,7 @@ static void HookFunction(const char* FunctionName, void* myfunction,
 	case 1: {
 		strcpy(entity->FunctionName, FunctionName);
 		entity->NewFunc = (void*) myfunction;
-		if (!TK_HookExportFunction(entity)) {
+		if (!entity->OldFunc) {
 			*oldfunction = entity->OldFunc;
 			goto success;
 		} else {
@@ -379,28 +341,13 @@ static void newonCreate(JNIEnv *jni, jobject _this) {
 	oldonCreate(jni, _this);
 }
 
-static jstring (*oldToString)(JNIEnv *jni, jobject thiz, ...);
-static jstring newToString(JNIEnv *jni, jobject thiz, ...) {
-	jstring r = oldToString(jni, thiz);
-	char* str = jni->GetStringUTFChars(r, NULL);
-	__android_log_print(ANDROID_LOG_INFO, "mg_toString", "%s", str);
-	jni->ReleaseStringUTFChars(r, str);
-	return r;
-}
 
-static void onString(JNIEnv *jni, jclass clazz) {
-	__android_log_print(ANDROID_LOG_INFO, "mg_tips",
-			"Hooked into StringBuilder");
-	jmethodID toString = jni->GetMethodID(clazz, "toString",
-			"()Ljava/lang/String;");
-	if (toString != NULL)
-		MSJavaHookMethod(jni, clazz, toString, &newToString, &oldToString);
-}
+
 
 static void OnClazzLoad(JNIEnv *jniPtr, jclass clazz, void *data) {
-	init_TKHookFunc();
+//	init_TKHookFunc();
 	// Let user know that the class has been hooked
-	LOGI("TK_HookExportFunction:0x%X", (unsigned int)TK_HookExportFunction);
+	LOGI("my_TK_HookExportFunction:0x%X", (unsigned int)TK_HookExportFunction);
 	__android_log_print(ANDROID_LOG_INFO, "mg_anti_clazz",
 			"Hooked into the application.");
 
@@ -411,13 +358,12 @@ static void OnClazzLoad(JNIEnv *jniPtr, jclass clazz, void *data) {
 	} else
 		__android_log_print(ANDROID_LOG_ERROR, "mg_anti_OnClazzLoad",
 				"not find");
-	MSJavaHookClassLoad(NULL, "java/lang/StringBuilder", &onString);
 }
 
 MSInitialize
 {
 	__android_log_print(ANDROID_LOG_INFO, LOG_TAG, "Initialize start");
-	MSJavaHookClassLoad(NULL, "com/cnlive/intertv/MovieApplication", &OnClazzLoad);
+	MSJavaHookClassLoad(NULL, "com/example/gg/MyApp", &OnClazzLoad);
     __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "Initialize end");
 
 }
