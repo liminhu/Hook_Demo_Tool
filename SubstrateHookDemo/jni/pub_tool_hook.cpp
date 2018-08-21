@@ -67,7 +67,8 @@ static void* baseAdd = 0;
 static int isSoLoaded = 0;
 
 static int OnloadAddr =0x15510;
-static char*SoPath="/data/data/com.dn.test/lib/libsandbox.so";                    //"/data/data/com.example.gg/lib/libsandbox.so";
+static char*SoPath="/data/data/com.dn.test/lib/libsandbox.so";
+//static char*SoPath= "/data/data/com.example.gg/lib/libsandbox.so";
 
 
 
@@ -326,6 +327,18 @@ void *mystrstr(void *dest, const void *src) {
 
 
 
+
+void *(*oldstrdup)(void *d);
+void *mystrdup(void *d) {
+	unsigned lr;
+	GETLR(lr);
+	__android_log_print(ANDROID_LOG_INFO, "native_my_strdup",
+			"a1[%s] ", d,  lr,lr-(int)baseAdd);
+	return oldstrdup(d);
+}
+
+
+
 static int time1=1;
 int (*oldmemset)(void *s, int ch, unsigned n);
 int mymemset(void *s, int ch, unsigned n){
@@ -389,6 +402,8 @@ myHookStruct myHookLibc[] = {
 		//HOOKEXPORT(write, MODE_EXPORT)
 	    HOOKEXPORT(memcpy, MODE_EXPORT),
 		//	HOOKEXPORT(time, MODE_EXPORT),
+
+		HOOKEXPORT(strdup, MODE_EXPORT),
 		};
 
 static void (*oldonCreate)(JNIEnv *jni, jobject _this, ...);
