@@ -145,6 +145,23 @@ void* my_14578(void* a1, void* a2){
 }
 
 
+
+
+
+
+
+void* (*old_FCE0)();
+void* my_FCE0(){
+	unsigned lr;
+	GETLR(lr);
+	int real_add=lr-(int)baseAdd;
+	__android_log_print(ANDROID_LOG_INFO, LOG_TAG,
+			"(my_FCE0) hook  hooked:LR:0x%x[0x%x] ", lr,real_add );
+	//return a1;
+}
+
+
+
 void baseAddressFunc() {
 	if (isSoLoaded)
 		return;
@@ -227,7 +244,23 @@ void mykill(int a1, int a2) {
 	return oldkill(a1,a2);
 }
 
+void *(*oldstrcmp)(void *dest, const void *src);
+void *mystrcmp(void *dest, const void *src) {
+	unsigned lr;
+	GETLR(lr);
+	__android_log_print(ANDROID_LOG_INFO, "native_my_strcmp",
+			"a1[%s] a2[%s] dress[0x%x-0x%x]", dest, src,  lr,lr-(int)baseAdd);
+	return oldstrcmp(dest, src);
+}
 
+void *(*oldstrdup)(void *d);
+void *mystrdup(void *d) {
+	unsigned lr;
+	GETLR(lr);
+	__android_log_print(ANDROID_LOG_INFO, "native_my_strdup",
+			" a1[%s] -- lr:[%x--%x]", d,  lr,lr-(int)baseAdd);
+	return oldstrdup(d);
+}
 
 
 void *(*oldstrstr)(void *dest, const void *src);
@@ -238,7 +271,9 @@ void *mystrstr(void *dest, const void *src) {
 
 
 	if(baseAdd>0 && k==1){
-		TK_INLINEHOOK(14578);
+		//TK_INLINEHOOK(14578);
+
+		TK_INLINEHOOK(FCE0);
 		k=0;
 	}
 
@@ -294,6 +329,8 @@ myHookStruct myHookLibc[] = {
 		HOOKEXPORT(kill, MODE_EXPORT),
 		HOOKEXPORT(usleep, MODE_EXPORT),
 		HOOKEXPORT(strstr, MODE_EXPORT),
+		HOOKEXPORT(strcmp, MODE_EXPORT),
+		HOOKEXPORT(strdup, MODE_EXPORT),
 
 		};
 
