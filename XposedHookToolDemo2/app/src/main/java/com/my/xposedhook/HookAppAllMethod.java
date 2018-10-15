@@ -29,7 +29,7 @@ public class HookAppAllMethod {
 	public static Set<String> methodSignSet = Collections.synchronizedSet(new HashSet<String>());
 	public static Set<String> callMethodSignSet = Collections.synchronizedSet(new HashSet<String>()) ;
 	
-	private static final String FILTER_PKGNAME = Common.PACKAGE_NAME;
+	private static final String FILTER_PKGNAME = Common.HOOK_PACKAGE_NAME;
 
 	public static void hookMethod(LoadPackageParam loadPackageParam){
 		String pkgname = loadPackageParam.packageName;

@@ -17,7 +17,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 public class XposedLoader implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
-        final String prefsValue = Common.PACKAGE_NAME;
+        final String prefsValue = Common.HOOK_PACKAGE_NAME;
         if (prefsValue.equals(lpparam.packageName)) {
             MyLog.e("pkg: "+lpparam.packageName);
             XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class,
