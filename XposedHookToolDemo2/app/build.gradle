@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "27.0.3"
+
+    defaultConfig {
+        applicationId "com.hu.myxposeddemo.test2"
+        minSdkVersion 16
+        targetSdkVersion 26
+
+        versionCode 1
+        versionName "1.0.1"
+        multiDexEnabled false
+    }
+
+    signingConfigs {
+        SignConfig {
+            storeFile file('signkey.jks')
+
+            storePassword project.storePassword
+            keyAlias project.keyAlias
+            keyPassword project.keyPassword
+        }
+    }
+
+
+
+    lintOptions {
+        abortOnError false
+    }
+
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.SignConfig
+            minifyEnabled false  //true开启混淆配置，false关闭
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "apk-hook2-${variant.buildType.name}-v${variant.versionCode}-xpoosed.apk".toLowerCase()
+        }
+    }
+}
+
+
+dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'de.robv.android.xposed:api:53'
+
+}

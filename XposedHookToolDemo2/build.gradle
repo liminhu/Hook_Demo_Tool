@@ -1,0 +1,35 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+
+def loadProperties(String sourceFileName) {
+    def config = new Properties()
+    def propFile = new File(sourceFileName)
+    if (propFile.canRead()) {
+        config.load(new FileInputStream(propFile))
+        for (Map.Entry property in config) {
+            project.ext[property.key] = property.value
+        }
+    }
+}
+
+loadProperties("local.properties")
+
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.1.0'
+    }
+}
+
+
+
+allprojects {
+    repositories {
+        google()
+        maven{ url 'https://maven.aliyun.com/repository/jcenter'}
+    }
+}
+

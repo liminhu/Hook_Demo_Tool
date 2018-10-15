@@ -1,0 +1,17 @@
+/build/
+/app/build/
+/dep/plugin/build/
+/.gradle/
+/.idea/
+/.DS_Store
+/app/.DS_Store
+/app/libs/.DS_Store
+/app/src/main/.DS_Store
+/dep/.DS_Store
+/dep/plugin/.DS_Store
+/gradle/.DS_Store
+local.properties
+/dep/plugin/jni/
+/*.iml
+/app/*.iml
+/dep/plugin/*.iml
