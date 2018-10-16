@@ -31,7 +31,6 @@ public class HotLoadPackageEntry {
         SharedObject.loadPackageParam = loadPackageParam;
         SharedObject.masterClassLoader = masterClassLoader;
         SharedObject.pluginClassLoader = pluginClassLoader;
-        // SharedObject.pluginApkLocation = pluginApkLocation;
 
         List<XposedHotLoadCallBack> allCallBack = findAllCallBack();
         if (allCallBack.isEmpty()) {
@@ -49,10 +48,10 @@ public class HotLoadPackageEntry {
     private static List<XposedHotLoadCallBack> findAllCallBack() {
         InputStream stream = SharedObject.pluginClassLoader.getResourceAsStream("assets/hotload_entry.txt");
         if (stream == null) {
-            //cancel log print,because the code will execute for all app process
-            //XposedBridge.log("can not find hotload_entry.txt,please check");
+            MyLog.e("hotload_entry 加载失败 .... ");
             return Collections.emptyList();
         }
+      //  MyLog.e("hotload_entry 加载成功 .... ");
         List<XposedHotLoadCallBack> result = Lists.newLinkedList();
         try {
             BufferedReader moduleClassesReader = new BufferedReader(new InputStreamReader(stream));

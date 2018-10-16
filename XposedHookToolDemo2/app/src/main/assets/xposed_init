@@ -1,1 +1,1 @@
-com.my.hook.utils.xposed.XposedLoader
+com.hotload.hook.XposedInit

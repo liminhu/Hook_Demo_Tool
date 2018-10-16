@@ -70,12 +70,12 @@ public class XposedInit implements IXposedHookLoadPackage {
             hasInstantRun = false;
         }
         if (hasInstantRun) {
-            Log.e("weijia", "  Cannot load module, please disable \"Instant Run\" in Android Studio.");
+           MyLog.d("  Cannot load module, please disable \"Instant Run\" in Android Studio.");
             return;
         }
         try {
             Class<?> aClass = hotClassLoader.loadClass(Common.HOTLOAD_PLUGIN_ENTRY);
-            MyLog.e( "invoke hot load entry");
+         //   MyLog.e( "invoke hot load entry");
             aClass.getMethod("entry", ClassLoader.class, ClassLoader.class, Context.class, XC_LoadPackage.LoadPackageParam.class)
                     .invoke(null, ownerClassLoader, hotClassLoader, context, lpparam);
         } catch (Exception e) {
@@ -155,7 +155,7 @@ public class XposedInit implements IXposedHookLoadPackage {
             MyLog.e("can not find plugin install location for plugin: " + packageName);
             return classLoader;
         }
-        MyLog.e("xposed 插件安装后不能立即生效（需要重启Android系统）的本质原因是这两个文件不equal");
+      //  MyLog.e("xposed 插件安装后不能立即生效（需要重启Android系统）的本质原因是这两个文件不equal");
         return createClassLoader(classLoader.getParent(), packageInfo);
     }
 
@@ -181,7 +181,7 @@ public class XposedInit implements IXposedHookLoadPackage {
             if (classLoaderCache.containsKey(packageInfo.applicationInfo.sourceDir)) {
                 return classLoaderCache.get(packageInfo.applicationInfo.sourceDir);
             }
-            MyLog.d("create a new classloader for plugin with new apk path: " + packageInfo.applicationInfo.sourceDir);
+         //   MyLog.d("create a new classloader for plugin with new apk path: " + packageInfo.applicationInfo.sourceDir);
             PathClassLoader hotClassLoader = new PathClassLoader(packageInfo.applicationInfo.sourceDir, parent);
             classLoaderCache.putIfAbsent(packageInfo.applicationInfo.sourceDir, hotClassLoader);
             return hotClassLoader;
