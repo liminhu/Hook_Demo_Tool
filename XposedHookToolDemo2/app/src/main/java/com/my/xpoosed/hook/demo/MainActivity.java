@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            MyLog.e("hotload_entry 加载成功。。 .... ");
+          //  MyLog.e("hotload_entry 加载成功。。 .... ");
             try {
                 BufferedReader moduleClassesReader = new BufferedReader(new InputStreamReader(inputStream));
                 String taskName;

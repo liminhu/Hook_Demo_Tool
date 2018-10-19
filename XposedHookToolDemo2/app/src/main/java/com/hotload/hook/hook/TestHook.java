@@ -6,7 +6,6 @@ import com.my.hook.utils.xposed.Common;
 import com.my.utils.tool.MyLog;
 
 import org.apache.commons.lang3.StringUtils;
-
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 /**
@@ -24,8 +23,6 @@ public class TestHook implements XposedHotLoadCallBack {
         hasHook = true;
         //这里是真正hook的代码，所有需要访问的参数，都在com.virjar.xposedhooktool.hotload.SharedObject里面
         MyLog.e("hook package: " + SharedObject.loadPackageParam.packageName + " and plugin location is: success ... 123 ");
-
-
     }
 
     @Override

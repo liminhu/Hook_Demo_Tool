@@ -46,7 +46,13 @@ public class HotLoadPackageEntry {
     }
 
     private static List<XposedHotLoadCallBack> findAllCallBack() {
-        InputStream stream = SharedObject.pluginClassLoader.getResourceAsStream("assets/hotload_entry.txt");
+        InputStream stream=null;
+        try{
+           // stream=SharedObject.context.getAssets().open("hotload_entry.txt");
+            stream = SharedObject.pluginClassLoader.getResourceAsStream("assets/hotload_entry.txt");
+        }catch (Exception e){
+            MyLog.e("stream is null  .... ");
+        }
         if (stream == null) {
             MyLog.e("hotload_entry 加载失败 .... ");
             return Collections.emptyList();
