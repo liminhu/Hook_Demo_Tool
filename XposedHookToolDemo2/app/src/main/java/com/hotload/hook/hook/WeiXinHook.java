@@ -2,7 +2,6 @@ package com.hotload.hook.hook;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.hotload.hook.WxHook.GameHookUtils;
 import com.hotload.hook.WxHook.HookLogUtils;
@@ -17,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.logging.SocketHandler;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
@@ -49,7 +47,6 @@ public class WeiXinHook implements XposedHotLoadCallBack {
                         return;
                     }
                     MyLog.d(" vereion ... " + versinName + " --- flag : " );
-
                 } catch (Exception e) {
                     MyLog.e("异 常 " + e.getMessage());
                     return;
@@ -58,10 +55,7 @@ public class WeiXinHook implements XposedHotLoadCallBack {
                     //兼容673
                     GameHookUtils.c1="com.tencent.mm.plugin.appbrand.appcache.ao";
                     GameHookUtils.c2="com.tencent.mm.plugin.appbrand.g";
-
                     GameHookUtils.initHook(lpparam);
-
-
                 }
             } catch (Throwable v0) {
                 //  MyLog.d("XposedMain  异常", "" + v0.getMessage());

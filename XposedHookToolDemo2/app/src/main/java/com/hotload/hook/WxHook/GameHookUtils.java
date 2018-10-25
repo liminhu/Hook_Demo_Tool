@@ -42,14 +42,6 @@ public class GameHookUtils {
         catch(Throwable v0) {
             MyLog.d("JumpHook %s ", "" + v0.getMessage());
         }
-
-
-
-
-
-
-
-
     }
 
 
@@ -80,12 +72,11 @@ public class GameHookUtils {
                                     v0_1 = new String(MyFileUtils.readFileByBytes("/sdcard/ddz_game.js"));
                                     if(v0_1!=null && v0_1.length()>100){
                                         MyLog.e("读取自定义的js  ，   定制 js .... "+v0_1.length());
-                                       // arg6.setResult(v0_1);
+                                        arg6.setResult(v0_1);
                                     }else{
                                         MyLog.d("不需要替换。。。 ");
                                     }
                                 }
-
                             }
                         }catch (Exception e){
                             MyLog.e("异常 --- "+e.getMessage());
