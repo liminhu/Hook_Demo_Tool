@@ -73,7 +73,6 @@ public class WeiXinHook implements XposedHotLoadCallBack {
 
 
 
-
     /*            try {
                     // Hook小游戏修改 "转发" 菜单
                     Class<?> menuAddArg1Class = SharedObject.masterClassLoader.loadClass(weixin.ABI_CLS_APPBRAND_MENU_ADD_PARMA1);
