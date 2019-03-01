@@ -16,7 +16,7 @@ loadProperties("local.properties")
 
 buildscript {
     repositories {
-        jcenter()
+        maven{ url 'https://maven.aliyun.com/repository/jcenter'}
         google()
     }
     dependencies {

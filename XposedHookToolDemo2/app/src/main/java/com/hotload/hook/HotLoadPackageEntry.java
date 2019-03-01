@@ -1,7 +1,6 @@
 package com.hotload.hook;
 
 import android.content.Context;
-
 import com.google.common.collect.Lists;
 import com.hotload.hook.utils.SharedObject;
 import com.hotload.hook.utils.XposedHotLoadCallBack;
@@ -25,6 +24,7 @@ public class HotLoadPackageEntry {
 
     @SuppressWarnings("unused")
     public static void entry(ClassLoader masterClassLoader, ClassLoader pluginClassLoader, Context context, XC_LoadPackage.LoadPackageParam loadPackageParam) {
+       // MyLog.e(" entry ... 000 ");
 
         //将一批有用的对象放置到静态区域，方便使用
         SharedObject.context = context;

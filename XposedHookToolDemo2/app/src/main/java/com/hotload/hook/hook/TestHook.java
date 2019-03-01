@@ -28,6 +28,7 @@ public class TestHook implements XposedHotLoadCallBack {
     @Override
     public boolean needHook(XC_LoadPackage.LoadPackageParam loadPackageParam) {
         //只hook易通行
+        Common.HOOK_PACKAGE_NAME="com.zhb.samsung.health.demo";
         return StringUtils.equalsIgnoreCase(loadPackageParam.packageName, Common.HOOK_PACKAGE_NAME);
     }
 }

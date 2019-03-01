@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
+
 
     defaultConfig {
         applicationId "com.hu.myxposeddemo.test2"
@@ -17,7 +17,6 @@ android {
     signingConfigs {
         SignConfig {
             storeFile file('signkey.jks')
-
             storePassword project.storePassword
             keyAlias project.keyAlias
             keyPassword project.keyPassword
@@ -32,9 +31,19 @@ android {
 
 
     buildTypes {
+
+        debug {
+            signingConfig signingConfigs.SignConfig
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+
         release {
             signingConfig signingConfigs.SignConfig
-            minifyEnabled false  //true开启混淆配置，false关闭
+            minifyEnabled true  //true开启混淆配置，false关闭
+            zipAlignEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -49,8 +58,8 @@ android {
 
 dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'de.robv.android.xposed:api:53'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    compileOnly 'de.robv.android.xposed:api:82'
 
 
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'

@@ -2,7 +2,6 @@ package com.hotload.hook.hook;
 
 import android.content.Context;
 import android.text.TextUtils;
-
 import com.hotload.hook.WxHook.GameHookUtils;
 import com.hotload.hook.WxHook.HookLogUtils;
 import com.hotload.hook.WxHook.WeixinVer6_7_3;
@@ -13,13 +12,15 @@ import com.my.hook.utils.xposed.Common;
 import com.my.utils.tool.MyLog;
 
 import org.apache.commons.lang3.StringUtils;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+
+
+
+
 
 
 public class WeiXinHook implements XposedHotLoadCallBack {
